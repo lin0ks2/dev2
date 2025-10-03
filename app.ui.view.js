@@ -875,6 +875,11 @@ if (!w) return;
       const t = (typeof App.i18n==='function') ? (App.i18n()||{}) : {};
       if (titleEl && t.settingsTitle) titleEl.textContent = String(t.settingsTitle);
       if (contentEl){
+        const normalEl = contentEl.querySelector('[data-i18n="modeNormal"]');
+        if (normalEl && t.modeNormal) normalEl.textContent = String(t.modeNormal);
+        const hardEl = contentEl.querySelector('[data-i18n="modeHard"]');
+        if (hardEl && t.modeHard) hardEl.textContent = String(t.modeHard);
+    
         // Use the i18n text if present; fallback string otherwise
         const text = (t.settingsInDev!=null) ? String(t.settingsInDev) : '';
         (function(){
@@ -1111,6 +1116,41 @@ function showMotivation(type = "praise") {
 })();
 
 
+
+
+// --- Added for mode switch protection ---
+App.hasProgress = function(){
+  try {
+    if (!App.Decks) return false;
+    for (const deckName in App.Decks) {
+      const deck = App.Decks[deckName];
+      if (deck && deck.words) {
+        for (const w of deck.words) {
+          if (w.stars && w.stars > 0) return true;
+        }
+      }
+    }
+    return false;
+  } catch(e){ return false; }
+};
+
+App.resetProgress = function(){
+  try {
+    if (!App.Decks) return;
+    for (const deckName in App.Decks) {
+      const deck = App.Decks[deckName];
+      if (deck && deck.words) {
+        for (const w of deck.words) {
+          if (w.stars) w.stars = 0;
+        }
+      }
+    }
+    try { localStorage.removeItem('lexitron.progress'); } catch(_){}
+    // optionally re-render UI
+    if (typeof App.renderStats === 'function') App.renderStats();
+  } catch(e){ console.error(e); }
+};
+// --- End added ---
 // Settings toggle wiring (Normal/Hard)
 (function(){
   const App = window.App || (window.App = {});
@@ -1126,7 +1166,17 @@ function showMotivation(type = "praise") {
   function applyFromUI(){
     const el = document.getElementById('modeToggle');
     if (!el) return;
-    const isHard = !!el.checked;
+    const newIsHard = !!el.checked;
+    const currentIsHard = (App.getMode() === 'hard');
+    if (newIsHard !== currentIsHard && App.hasProgress()){
+      const msg = 'Переключение режима сбросит весь прогресс. Продолжить?';
+      if (!window.confirm(msg)){
+        el.checked = currentIsHard; // revert toggle
+        return;
+      }
+      App.resetProgress();
+    }
+    const isHard = newIsHard;
     App.settings = App.settings || {};
     App.settings.mode = isHard ? 'hard' : 'normal';
     try{ localStorage.setItem('lexitron.mode', App.settings.mode); }catch(_){}
@@ -1144,4 +1194,11 @@ function showMotivation(type = "praise") {
     syncFromSettings();
   }
   // also resync when i18n changes or settings modal opens could be added if needed
-})();
+})()
+  document.addEventListener('DOMContentLoaded', () => {
+      document.addEventListener('lexi:lang-changed', () => { try{ const f=typeof fillFromI18n==='function'?fillFromI18n:null; if(f) f(); }catch(_){}});
+      const el = document.getElementById('modeToggle');
+      if (el) el.addEventListener('change', applyFromUI);
+      syncFromSettings();
+  });
+;

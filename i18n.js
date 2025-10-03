@@ -124,7 +124,7 @@ modeNormal: "Звичайний режим",
 donateText: "Розділ у розробці. Дякуємо за бажання підтримати!",
 donateTitle: "Підтримати проєкт",
 settingsTitle: "Налаштування",
-      settingsInDev: "Розділ у розробці.",
+      settingsInDev: "",
 
 
       // Core UI labels
