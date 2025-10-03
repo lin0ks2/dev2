@@ -842,6 +842,40 @@ if (!w) return;
   else fillFromI18n();
 })();
 
+
+// Settings modal bootstrap (mirrors Info modal; safe & isolated)
+(function(){
+  const btn   = document.getElementById('btnSettings');
+  const modal = document.getElementById('settingsModal');
+  if (!btn || !modal) return;
+  const titleEl   = document.getElementById('settingsTitle');
+  const contentEl = document.getElementById('settingsContent');
+  const closeEl   = document.getElementById('settingsClose');
+  const okEl      = document.getElementById('settingsOk');
+
+  function fillFromI18n(){
+    try{
+      const t = (typeof App.i18n==='function') ? (App.i18n()||{}) : {};
+      if (titleEl && t.settingsTitle) titleEl.textContent = String(t.settingsTitle);
+      if (contentEl){
+        // Use the i18n text if present; fallback string otherwise
+        const text = (t.settingsInDev!=null) ? String(t.settingsInDev) : 'Раздел в разработке.';
+        contentEl.innerHTML = '<p>'+ text.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])) +'</p>';
+      }
+    }catch(_){}
+  }
+  function open(){ try{ fillFromI18n(); modal.classList.remove('hidden'); }catch(_){} }
+  function close(){ try{ modal.classList.add('hidden'); }catch(_){} }
+
+  btn.addEventListener('click', open, { passive:true });
+  if (closeEl) closeEl.addEventListener('click', close, { passive:true });
+  if (okEl) okEl.addEventListener('click', close, { passive:true });
+  modal.addEventListener('click', function(e){ if (e.target===modal) close(); }, { passive:true });
+
+  if (document.readyState==='loading') document.addEventListener('DOMContentLoaded', fillFromI18n);
+  else fillFromI18n();
+})();
+
 function showMotivation(type = "praise") {
   try {
     const mot = document.getElementById("motivation");
