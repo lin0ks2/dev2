@@ -579,43 +579,26 @@ a#donate, .donate, .donate a, .donate-btn, .donate-btn a, .icon-donate,
 #modal .modalHeader{ border-bottom: none !important; }  /* keep only ::after inset divider */
 
 
-/* --- Modal & iOS fixes (2025-10-03) --- */
-.modal {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0,0,0,0.35);
-  z-index: 9999;
-  -webkit-backdrop-filter: blur(2px);
-  backdrop-filter: blur(2px);
-}
-.modal[hidden] { display: none !important; }
-
-.modal .modalHeader, .modal .modalBody, .modal .modalActions {
-  width: 100%;
+.modal .modalActions { padding-bottom: max(16px, env(safe-area-inset-bottom)); }
 }
 
-.iconBtn, .btnOk, button {
-  -webkit-tap-highlight-color: transparent;
-  outline: none;
+#settingsModal .modalFrame{
+  width:min(680px, 92vw); background:var(--card); color:var(--text);
+  border-radius:16px; box-shadow: 0 10px 30px rgba(0,0,0,.15); border:1px solid var(--border);
 }
-
-body.modal-open {
-  overflow: hidden !important;
-  overscroll-behavior: contain;
-  touch-action: none;
+#settingsModal .modalFrame{ overflow:hidden; }
+#settingsModal .modalHeader{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 14px; border-bottom:1px solid var(--border);
 }
-
-/* Prevent iOS "bounce" behind modal */
-html.modal-open, body.modal-open {
-  position: fixed;
-  width: 100%;
+#settingsModal .modalHeader{ position:relative; border-bottom:none; padding-left:14px; padding-right:14px; }
+#settingsModal .modalHeader{
+  position: relative;
+  border-bottom: none !important;
 }
-
-/* Safe area padding for iOS notch */
-@supports(padding: max(0px)) {
-  .modal .modalHeader { padding-top: max(16px, env(safe-area-inset-top)); }
-  .modal .modalActions { padding-bottom: max(16px, env(safe-area-inset-bottom)); }
+#settingsModal .modalBody{ padding:14px; font-size:14px; line-height:1.5; color: var(--text); }
+#settingsModal .modalActions{
+  display:flex; justify-content:center;
+  padding:14px 14px 14px; border-top:1px solid var(--border);
 }
+#settingsModal .modalActions{ position:relative; border-top:none; padding-left:14px; padding-right:14px; }

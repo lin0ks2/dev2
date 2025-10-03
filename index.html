@@ -235,61 +235,52 @@
         <h3 class="modalTitle" id="settingsTitle" data-i18n="settingsTitle">Настройки</h3>
         <button class="modalClose" aria-label="Close">×</button>
       </div>
+<!-- Settings modal (consistent with Info modal) -->
+  <div id="settingsModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+    <div class="modalFrame">
+      <div class="modalHeader">
+        <h3 class="modalTitle" id="settingsTitle" data-i18n="settingsTitle">Настройки</h3>
+        <button class="modalClose" aria-label="Close">×</button>
+      </div>
+      <div class="modalBody">
+        <p data-i18n="settingsEmpty">Тут появятся настройки. (Скоро)</p>
+      </div>
+      <div class="modalActions">
+        <button class="primary" data-i18n="ok">OK</button>
+      </div>
+    </div>
+  </div>
 <script>
 (function(){
-  var _scrollY = 0;
-  function lockScroll(){
-    _scrollY = window.scrollY || document.documentElement.scrollTop || 0;
-    document.documentElement.classList.add('modal-open');
-    document.body.classList.add('modal-open');
-    document.body.style.top = (-_scrollY) + 'px';
-  }
-  function unlockScroll(){
-    document.documentElement.classList.remove('modal-open');
-    document.body.classList.remove('modal-open');
-    document.body.style.top = '';
-    window.scrollTo(0, _scrollY || 0);
-  }
-  window.__LXR_lockScroll = lockScroll;
-  window.__LXR_unlockScroll = unlockScroll;
+  var modal = document.getElementById('settingsModal');
+  var btn = document.getElementById('btnSettings');
+  if (!modal || !btn) return;
 
-  // Wire generic handlers for all .modal elements
-  document.addEventListener('click', function(e){
-    var t = e.target;
-    if (!t) return;
-    var modal = t.closest && t.closest('.modal');
-    if (modal){
-      if (t.classList.contains('modalClose') || t.classList.contains('btnOk') || t===modal){
-        // close one
-        if (!modal.hasAttribute('hidden')) {
-          modal.setAttribute('hidden','');
-          // if no other modals open, unlock
-          if (!document.querySelector('.modal:not([hidden])')) window.__LXR_unlockScroll();
-        }
-      }
+  function open(){ modal.classList.remove('hidden'); try{ window.hydrateI18N && window.hydrateI18N(); }catch(_){ } }
+  function close(){ modal.classList.add('hidden'); }
+
+  btn.addEventListener('click', function(e){ e.preventDefault(); closeOthers(); open(); });
+
+  // Close on X / OK / backdrop
+  modal.addEventListener('click', function(e){
+    if (e.target.classList.contains('modalClose') || e.target.classList.contains('primary') || e.target === modal){
+      close();
     }
-  }, true);
-
-  // When any script shows a modal (by removing [hidden]), lock scroll
-  var mo = new MutationObserver(function(muts){
-    var anyOpen = !!document.querySelector('.modal:not([hidden])');
-    if (anyOpen) window.__LXR_lockScroll(); else window.__LXR_unlockScroll();
   });
-  mo.observe(document.body, { attributes:true, attributeFilter:['hidden'], subtree:true });
-})();
-</script>
-<script>
-(function(){
-  var settingsBtn = document.getElementById('btnSettings');
-  var settingsModal = document.getElementById('settingsModal');
-  if (settingsBtn && settingsModal){
-    settingsBtn.addEventListener('click', function(e){
-      e.preventDefault();
-      document.querySelectorAll('.modal').forEach(function(m){ m.setAttribute('hidden',''); });
-      try{ window.hydrateI18N && window.hydrateI18N(); }catch(_){}
-      settingsModal.removeAttribute('hidden');
-    });
+
+  // Ensure only one modal visible at a time, but don't touch attributes of others
+  function closeOthers(){
+    var openInfo = document.getElementById('infoModal');
+    if (openInfo && !openInfo.classList.contains('hidden')){
+      openInfo.classList.add('hidden');
+    }
+    var generic = document.getElementById('modal'); // словари
+    if (generic && !generic.classList.contains('hidden')){
+      generic.classList.add('hidden');
+    }
   }
+
+  document.addEventListener('i18n:lang-changed', function(){ try{ window.hydrateI18N && window.hydrateI18N(); }catch(_){}});
 })();
 </script>
 </body>
