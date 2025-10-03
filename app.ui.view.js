@@ -876,11 +876,11 @@ if (!w) return;
       if (titleEl && t.settingsTitle) titleEl.textContent = String(t.settingsTitle);
       if (contentEl){
         // Use the i18n text if present; fallback string otherwise
-        const text = (t.settingsInDev!=null) ? String(t.settingsInDev) : 'Раздел в разработке.';
+        const text = (t.settingsInDev!=null) ? String(t.settingsInDev) : '';
         (function(){
           const sel = '[data-i18n="settingsInDev"]';
           let p = contentEl.querySelector(sel);
-          if (!p){
+          if (!p && text && String(text).trim().length){
             p = document.createElement('p');
             p.setAttribute('data-i18n','settingsInDev');
             contentEl.prepend(p);
