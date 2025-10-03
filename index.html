@@ -147,11 +147,7 @@
         <div class="modalHeader">
           <div class="modalTitle" id="infoTitle">Info</div>
 <!-- Settings modal (empty content for now) -->
-    <div id="settingsModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle" hidden>
-      <div class="modalHeader">
-        <h3 class="modalTitle" id="settingsTitle" data-i18n="settingsTitle">Настройки</h3>
-        <button class="modalClose" aria-label="Close">×</button>
-      </div>
+    
       <div class="modalBody">
         <p data-i18n="settingsEmpty">Тут появятся настройки. (Скоро)</p>
       </div>
@@ -234,49 +230,66 @@
 
 
   <!-- --------------------------  К О Н Е Ц  --------------------------- -->
+<div id="settingsModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle" hidden>
+      <div class="modalHeader">
+        <h3 class="modalTitle" id="settingsTitle" data-i18n="settingsTitle">Настройки</h3>
+        <button class="modalClose" aria-label="Close">×</button>
+      </div>
 <script>
 (function(){
-  function hydrateI18N(){
-    try{
-      var App = window.App || {};
-      var bag = (App.i18n && App.i18n()) || (window.I18N && (window.I18N[(App.settings&&App.settings.lang)||'uk'] || window.I18N.uk)) || {};
-      document.querySelectorAll('[data-i18n]').forEach(function(el){
-        var key = el.getAttribute('data-i18n');
-        if (bag && bag[key]) el.textContent = bag[key];
-      });
-      document.querySelectorAll('[data-i18n-title]').forEach(function(el){
-        var key = el.getAttribute('data-i18n-title');
-        if (bag && bag[key]) el.setAttribute('title', bag[key]);
-      });
-      document.querySelectorAll('[data-i18n-aria]').forEach(function(el){
-        var key = el.getAttribute('data-i18n-aria');
-        if (bag && bag[key]) el.setAttribute('aria-label', bag[key]);
-      });
-    }catch(e){/*noop*/}
+  var _scrollY = 0;
+  function lockScroll(){
+    _scrollY = window.scrollY || document.documentElement.scrollTop || 0;
+    document.documentElement.classList.add('modal-open');
+    document.body.classList.add('modal-open');
+    document.body.style.top = (-_scrollY) + 'px';
   }
-  window.hydrateI18N = hydrateI18N;
-  document.addEventListener('DOMContentLoaded', hydrateI18N);
-  document.addEventListener('i18n:lang-changed', hydrateI18N);
+  function unlockScroll(){
+    document.documentElement.classList.remove('modal-open');
+    document.body.classList.remove('modal-open');
+    document.body.style.top = '';
+    window.scrollTo(0, _scrollY || 0);
+  }
+  window.__LXR_lockScroll = lockScroll;
+  window.__LXR_unlockScroll = unlockScroll;
+
+  // Wire generic handlers for all .modal elements
+  document.addEventListener('click', function(e){
+    var t = e.target;
+    if (!t) return;
+    var modal = t.closest && t.closest('.modal');
+    if (modal){
+      if (t.classList.contains('modalClose') || t.classList.contains('btnOk') || t===modal){
+        // close one
+        if (!modal.hasAttribute('hidden')) {
+          modal.setAttribute('hidden','');
+          // if no other modals open, unlock
+          if (!document.querySelector('.modal:not([hidden])')) window.__LXR_unlockScroll();
+        }
+      }
+    }
+  }, true);
+
+  // When any script shows a modal (by removing [hidden]), lock scroll
+  var mo = new MutationObserver(function(muts){
+    var anyOpen = !!document.querySelector('.modal:not([hidden])');
+    if (anyOpen) window.__LXR_lockScroll(); else window.__LXR_unlockScroll();
+  });
+  mo.observe(document.body, { attributes:true, attributeFilter:['hidden'], subtree:true });
 })();
 </script>
 <script>
 (function(){
-  var btn = document.getElementById('btnSettings');
-  var modal = document.getElementById('settingsModal');
-  if (btn && modal){
-    btn.addEventListener('click', function(){
+  var settingsBtn = document.getElementById('btnSettings');
+  var settingsModal = document.getElementById('settingsModal');
+  if (settingsBtn && settingsModal){
+    settingsBtn.addEventListener('click', function(e){
+      e.preventDefault();
+      document.querySelectorAll('.modal').forEach(function(m){ m.setAttribute('hidden',''); });
       try{ window.hydrateI18N && window.hydrateI18N(); }catch(_){}
-      modal.removeAttribute('hidden');
-      modal.focus && modal.focus();
-    });
-    modal.addEventListener('click', function(e){
-      if (e.target.classList.contains('modalClose') || e.target.classList.contains('btnOk') || e.target === modal){
-        modal.setAttribute('hidden','');
-      }
+      settingsModal.removeAttribute('hidden');
     });
   }
-  // rehydrate on language change too
-  document.addEventListener('i18n:lang-changed', function(){ try{ window.hydrateI18N && window.hydrateI18N(); }catch(_){}});
 })();
 </script>
 </body>
