@@ -706,3 +706,63 @@ a#donate, .donate, .donate a, .donate-btn, .donate-btn a, .icon-donate,
 
 /* Guard: ensure Info modal uses inset divider only (no full-width border) */
 #infoModal .modalActions{ border-top: none !important; }
+
+/* Donate modal — оформление как у Settings */
+#donateModal.modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#donateModal.hidden { display: none; }
+
+#donateModal .modalFrame {
+  width: min(680px, 92vw);
+  background: var(--card);
+  color: var(--text);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.15);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+#donateModal .modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 14px;
+  position: relative;
+  border-bottom: none !important;
+}
+#donateModal .modalHeader::after {
+  content: "";
+  position: absolute;
+  left: 14px; right: 14px; bottom: 0;
+  height: 1px; background: var(--border);
+}
+
+#donateModal .modalBody {
+  padding: 14px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+#donateModal .modalActions {
+  display: flex;
+  justify-content: center;
+  padding: 14px 14px 14px;
+  position: relative;
+}
+#donateModal .modalActions::before {
+  content: "";
+  position: absolute;
+  left: 14px; right: 14px; top: 0;
+  height: 1px; background: var(--border);
+}
+
+#donateModal .iconBtn.small {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+}
