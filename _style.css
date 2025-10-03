@@ -358,6 +358,12 @@ a#donate, .donate, .donate a, .donate-btn, .donate-btn a, .icon-donate,
 }
 
 /* CLEAN FIX: remove underline from donate icon by id */
+#btnDonate, #btnDonate:link, #btnDonate:visited, #btnDonate:hover, #btnDonate:active, #btnDonate:focus {
+  text-decoration: none !important;
+  -webkit-text-decoration: none !important;
+}
+
+
 /* Motivation line — single source of truth */
 #motivationBox{
   text-align:center;
@@ -575,6 +581,7 @@ a#donate, .donate, .donate a, .donate-btn, .donate-btn a, .icon-donate,
 
    We do NOT change existing selectors; we only add #settingsModal twins.
    ===================================================================== */
+#infoModal.modal,
 #settingsModal.modal {
   display: flex;
   align-items: center;
@@ -583,6 +590,7 @@ a#donate, .donate, .donate a, .donate-btn, .donate-btn a, .icon-donate,
 
 #settingsModal.hidden { display: none; }
 
+#infoModal .modalFrame,
 #settingsModal .modalFrame{
   width: min(680px, 92vw);
   background: var(--card);
@@ -593,6 +601,7 @@ a#donate, .donate, .donate a, .donate-btn, .donate-btn a, .icon-donate,
   overflow: hidden;
 }
 
+#infoModal .modalHeader,
 #settingsModal .modalHeader{
   display: flex;
   align-items: center;
@@ -603,6 +612,7 @@ a#donate, .donate, .donate a, .donate-btn, .donate-btn a, .icon-donate,
   border-bottom: none !important;
 }
 
+#infoModal .modalHeader::after,
 #settingsModal .modalHeader::after{
   content: "";
   position: absolute;
@@ -613,6 +623,7 @@ a#donate, .donate, .donate a, .donate-btn, .donate-btn a, .icon-donate,
   background: var(--border);
 }
 
+#infoModal .modalBody,
 #settingsModal .modalBody{
   padding: 14px;
   font-size: 14px;
@@ -620,6 +631,7 @@ a#donate, .donate, .donate a, .donate-btn, .donate-btn a, .icon-donate,
   color: var(--text);
 }
 
+#infoModal .modalActions,
 #settingsModal .modalActions{
   display: flex;
   justify-content: center;
@@ -627,6 +639,7 @@ a#donate, .donate, .donate a, .donate-btn, .donate-btn a, .icon-donate,
   border-top: 1px solid var(--border);
 }
 
+#infoModal .iconBtn.small,
 #settingsModal .iconBtn.small{
   width: 36px;
   height: 36px;
@@ -702,7 +715,3 @@ a#donate, .donate, .donate a, .donate-btn, .donate-btn a, .icon-donate,
   height: 36px;
   border-radius: 10px;
 }
-
-
-/* Guard: ensure Info modal uses inset divider only (no full-width border) */
-#infoModal .modalActions{ border-top: none !important; }
