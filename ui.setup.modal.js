@@ -307,19 +307,7 @@
 
   function t(){ try{ return (typeof App!=='undefined' && typeof App.i18n==='function') ? (App.i18n()||{}) : {}; }catch(_){ return {}; } }
 
-  function fill(){
-    var tr = t();
-    if (title && tr.settingsTitle) title.textContent = tr.settingsTitle;
-    if (ok) ok.textContent = tr.ok || 'OK';
-    if (btn && tr.settingsTitle) btn.title = tr.settingsTitle;
-
-    if (body) {
-  /* settingsInDev removed */ else {
-    items[0].textContent = tr.settingsInDev || 'Раздел в разработке.';
-    for (var i=1;i<items.length;i++){ items[i].remove(); }
-  }
-}
-  }
+  function fill(){}
 
   function open(){ try{ fill(); modal && modal.classList.remove('hidden'); }catch(_){ } }
   function closeM(){ try{ modal && modal.classList.add('hidden'); }catch(_){ } }
