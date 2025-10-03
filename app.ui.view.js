@@ -841,7 +841,7 @@ if (!w) return;
       const t = (typeof App.i18n==='function') ? (App.i18n()||{}) : {};
       if (titleEl && t.infoTitle) titleEl.textContent = t.infoTitle;
       if (Array.isArray(t.infoSteps) && contentEl){
-        contentEl.innerHTML = '';
+        // keep existing content; no wipe
         const ul = document.createElement('ul');
         t.infoSteps.forEach(function(s){ const li=document.createElement('li'); li.textContent=String(s||''); ul.appendChild(li); });
         contentEl.appendChild(ul);
@@ -877,7 +877,16 @@ if (!w) return;
       if (contentEl){
         // Use the i18n text if present; fallback string otherwise
         const text = (t.settingsInDev!=null) ? String(t.settingsInDev) : 'Раздел в разработке.';
-        contentEl.innerHTML = '<p>'+ text.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])) +'</p>';
+        (function(){
+          const sel = '[data-i18n="settingsInDev"]';
+          let p = contentEl.querySelector(sel);
+          if (!p){
+            p = document.createElement('p');
+            p.setAttribute('data-i18n','settingsInDev');
+            contentEl.prepend(p);
+          }
+          p.textContent = text;
+        })();
       }
     }catch(_){}
   }
