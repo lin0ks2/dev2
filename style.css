@@ -766,3 +766,40 @@ a#donate, .donate, .donate a, .donate-btn, .donate-btn a, .icon-donate,
   height: 36px;
   border-radius: 10px;
 }
+/* Mode toggle — iOS-like switch */
+#modeToggleWrap { user-select:none }
+#modeToggleWrap label { gap:12px }
+#modeToggleWrap #modeToggle {
+  appearance: none;
+  position: relative;
+  width: 54px; height: 30px;
+  border-radius: 999px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  outline: none;
+  cursor: pointer;
+  transition: background .2s ease, border-color .2s ease, box-shadow .2s ease;
+  display: inline-block;
+}
+#modeToggleWrap #modeToggle::after{
+  content:"";
+  position:absolute; top:50%; left:4px;
+  width:22px; height:22px; border-radius:50%;
+  background: var(--card);
+  box-shadow: 0 1px 2px rgba(0,0,0,.2);
+  transform: translateY(-50%);
+  transition: left .2s ease, background .2s ease;
+}
+#modeToggleWrap #modeToggle:checked{
+  background: rgba(0, 160, 100, .85);      /* зелёный ON; можно заменить var(...) */
+  border-color: rgba(0, 160, 100, .9);
+}
+#modeToggleWrap #modeToggle:checked::after{ left: 28px; }
+
+#modeToggleWrap #modeToggle:focus-visible{
+  box-shadow: 0 0 0 3px rgba(100,150,240,.35);
+}
+#modeToggleWrap span{ font-size:14px; opacity:.9 }
+@media (prefers-reduced-motion: reduce){
+  #modeToggleWrap #modeToggle, #modeToggleWrap #modeToggle::after{ transition:none }
+}
