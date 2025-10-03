@@ -3,8 +3,8 @@
 (function(){
   const App = window.App || (window.App = {});
   App.settings = App.settings || {};
-  if (!App.settings.mode) App.settings.mode = (localStorage.getItem('lexitron.mode') || 'normal'); // default: normal
-  App.getMode = function(){ return (App.settings && App.settings.mode) || 'normal'; };
+  if (!App.settings.mode) App.settings.mode = (localStorage.getItem('lexitron.mode') || 'hard'); // default: hard
+  App.getMode = function(){ return (App.settings && App.settings.mode) || 'hard'; };
   App.getStarStep = function(){
     return (App.getMode() === 'normal') ? 1 : 0.5;
   };
