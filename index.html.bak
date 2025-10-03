@@ -132,11 +132,6 @@
          rel="noopener">
          💰
       </a>
-      <button id="btnSettings"
-        class="iconBtn"
-        title="Настройки"
-        aria-label="Настройки">⚙️</button>
-
       
     </div>
 
@@ -156,22 +151,6 @@
       </div>
     </div>
   
-
-    <!-- Settings modal (same style as Info) -->
-    <div id="settingsModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
-      <div class="modalFrame">
-        <div class="modalHeader">
-          <div class="modalTitle" id="settingsTitle">Settings</div>
-          <button class="iconBtn small" id="settingsClose" aria-label="Close">✖️</button>
-        </div>
-        <div class="modalBody">
-          <div id="settingsContent" class="infoContent"></div>
-        </div>
-        <div class="modalActions" style="text-align:center">
-          <button id="settingsOk" class="primary">OK</button>
-        </div>
-      </div>
-    </div>
   <div id="motivation" class="motivation"></div>
 </main>
 

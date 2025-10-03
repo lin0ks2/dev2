@@ -287,3 +287,48 @@
   if (document.readyState==='loading') document.addEventListener('DOMContentLoaded', fillFromI18n, {once:true});
   else fillFromI18n();
 })();
+
+/* ---- MERGED FROM: settings.modal.patch.js ---- */
+/*!
+ * settings.modal.patch.js — Placeholder modal "Настройки"
+ * Version: 1.6.2
+ * - Mirrors Info modal structure/handlers
+ * - Localizes title + button tooltip
+ * - Body shows "Раздел в разработке" text from i18n.settingsInDev
+ */
+(function(){
+  'use strict';
+  var btn   = document.getElementById('btnSettings');
+  var modal = document.getElementById('settingsModal');
+  var title = document.getElementById('settingsTitle');
+  var body  = document.getElementById('settingsContent');
+  var close = document.getElementById('settingsClose');
+  var ok    = document.getElementById('settingsOk');
+
+  function t(){ try{ return (typeof App!=='undefined' && typeof App.i18n==='function') ? (App.i18n()||{}) : {}; }catch(_){ return {}; } }
+
+  function fill(){
+    var tr = t();
+    if (title && tr.settingsTitle) title.textContent = tr.settingsTitle;
+    if (ok) ok.textContent = tr.ok || 'OK';
+    if (btn && tr.settingsTitle) btn.title = tr.settingsTitle;
+
+    if (body){
+      body.innerHTML = '';
+      var p = document.createElement('p');
+      p.textContent = tr.settingsInDev || 'Раздел в разработке.';
+      body.appendChild(p);
+    }
+  }
+
+  function open(){ try{ fill(); modal && modal.classList.remove('hidden'); }catch(_){ } }
+  function closeM(){ try{ modal && modal.classList.add('hidden'); }catch(_){ } }
+
+  if (btn)   btn.addEventListener('click', open, {passive:true});
+  if (close) close.addEventListener('click', closeM, {passive:true});
+  if (ok)    ok.addEventListener('click', closeM, {passive:true});
+  if (modal) modal.addEventListener('click', function(e){ if (e.target===modal) closeM(); }, {passive:true});
+
+  if (document.readyState==='loading') document.addEventListener('DOMContentLoaded', fill, {once:true});
+  else fill();
+})();
