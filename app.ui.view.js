@@ -1,3 +1,20 @@
+
+// --- Mode helpers (Normal vs Hard) ---
+(function(){
+  const App = window.App || (window.App = {});
+  App.settings = App.settings || {};
+  if (!App.settings.mode) App.settings.mode = (localStorage.getItem('lexitron.mode') || 'hard'); // default: hard
+  App.getMode = function(){ return (App.settings && App.settings.mode) || 'hard'; };
+  App.getStarStep = function(){
+    return (App.getMode() === 'normal') ? 1 : 0.5;
+  };
+  App.getReverseThreshold = function(){
+    return (App.getMode() === 'normal') ? 3.0 : 2.5;
+  };
+  // bridge to save
+  App.saveSettings = App.saveSettings || function(s){ try{ localStorage.setItem('lexitron.settings', JSON.stringify(s||App.settings||{})); localStorage.setItem('lexitron.mode', App.getMode()); }catch(_){ } };
+})();
+
 /*!
  * app.ui.view.js — Lexitron
  * Version: 1.6.2 (full-deck source, single-slice per set)
@@ -103,7 +120,7 @@
   // current word based on ABSOLUTE index, normalized to active set bounds, from FULL deck
   function current() {
     const deck = getFullDeck();
-    if (!deck.length) return { id:  - 0.5, word: '', uk: '', ru: '' };
+    if (!deck.length) return { id:  - App.getStarStep(), word: '', uk: '', ru: '' };
     const b = App.Sets ? App.Sets.activeBounds() : { start: 0, end: deck.length };
     if (App.state.index < b.start || App.state.index >= b.end) App.state.index = b.start;
     const local = App.state.index - b.start;
@@ -216,7 +233,7 @@
   }
 
   function pickIndexWithFallback(sub, key) {
-    if (!Array.isArray(sub) || sub.length === 0) return  - 0.5;
+    if (!Array.isArray(sub) || sub.length === 0) return  - App.getStarStep();
     if (isEndlessDict(key) && allLearned(sub, key)) {
       return Math.floor(Math.random() * sub.length);
     }
@@ -433,11 +450,11 @@ if (!w) return;
       if (key === 'mistakes' && App.Mistakes && App.Mistakes.getStars){
         const sk = w._mistakeSourceKey || (App.Mistakes.sourceKeyFor && App.Mistakes.sourceKeyFor(w.id));
         const cur = App.Mistakes.getStars(sk, w.id) || 0;
-        App.Mistakes.setStars(sk, w.id, Math.max(0, Math.min(max, cur+0.5)));
+        App.Mistakes.setStars(sk, w.id, Math.max(0, Math.min(max, cur + App.getStarStep())));
       } else {
         const cur = Math.max(0, Math.min(max, App.state.stars[App.starKey(w.id)] || 0));
-        App.state.stars[App.starKey(w.id)] = Math.max(0, Math.min(max, cur+0.5));
-        App.state.successes[App.starKey(w.id)] = (App.state.successes[App.starKey(w.id)] || 0)  + 0.5;
+        App.state.stars[App.starKey(w.id)] = Math.max(0, Math.min(max, cur + App.getStarStep()));
+        App.state.successes[App.starKey(w.id)] = (App.state.successes[App.starKey(w.id)] || 0)  + App.getStarStep();
       }
 
       App.saveState();
@@ -460,14 +477,14 @@ if (!w) return;
     if (key === 'mistakes' && App.Mistakes && App.Mistakes.getStars){
       const sk = w._mistakeSourceKey || (App.Mistakes.sourceKeyFor && App.Mistakes.sourceKeyFor(w.id));
       const cur = App.Mistakes.getStars(sk, w.id) || 0;
-      App.Mistakes.setStars(sk, w.id, Math.max(0, Math.min(max, cur - 0.5)));
+      App.Mistakes.setStars(sk, w.id, Math.max(0, Math.min(max, cur - App.getStarStep())));
     } else {
       const cur = Math.max(0, Math.min(max, App.state.stars[App.starKey(w.id)] || 0));
-      App.state.stars[App.starKey(w.id)] = Math.max(0, Math.min(max, cur - 0.5));
+      App.state.stars[App.starKey(w.id)] = Math.max(0, Math.min(max, cur - App.getStarStep()));
     }
 
     App.state.totals.errors += 1;
-    App.state.totals.sessionErrors = (App.state.totals.sessionErrors || 0)  + 0.5;
+    App.state.totals.sessionErrors = (App.state.totals.sessionErrors || 0)  + App.getStarStep();
 
     if (!(App.isFavorite && App.isFavorite((w._mistakeSourceKey || (App.Mistakes && App.Mistakes.sourceKeyFor && App.Mistakes.sourceKeyFor(w.id)) || (App.dictRegistry && App.dictRegistry.activeKey)), w.id))) {
       if(window.MistakesGate&&typeof MistakesGate.onFail==="function"){MistakesGate.onFail(w);}else{addToMistakesOnFailure(w);}
@@ -693,7 +710,7 @@ if (!w) return;
       App.saveDictRegistry();
 
       App.state.index = 0;
-      App.state.lastIndex =  - 0.5;
+      App.state.lastIndex =  - App.getStarStep();
       renderDictList();
       App.renderSetsBar();
       renderCard(true);
@@ -1071,4 +1088,51 @@ function showMotivation(type = "praise") {
 
   if (document.readyState==='loading') document.addEventListener('DOMContentLoaded', fillFromI18n, {once:true});
   else fillFromI18n();
+})();
+
+
+// override unlock threshold to depend on mode
+(function(){
+  try{
+    const App = window.App || {};
+    App.Trainer = App.Trainer || {};
+    const orig = App.Trainer.unlockThreshold || function(){ return 2.5; };
+    App.Trainer.unlockThreshold = function(){ return App.getReverseThreshold(); }; /* unlock threshold override */
+  }catch(_){}
+})();
+
+
+// Settings toggle wiring (Normal/Hard)
+(function(){
+  const App = window.App || (window.App = {});
+  function syncFromSettings(){
+    try{
+      const el = document.getElementById('modeToggle');
+      if (!el) return;
+      const isHard = (App.getMode() === 'hard');
+      el.checked = isHard; // checked means "hard" (to match label Hard on the right)
+      el.setAttribute('aria-checked', String(isHard));
+    }catch(_){}
+  }
+  function applyFromUI(){
+    const el = document.getElementById('modeToggle');
+    if (!el) return;
+    const isHard = !!el.checked;
+    App.settings = App.settings || {};
+    App.settings.mode = isHard ? 'hard' : 'normal';
+    try{ localStorage.setItem('lexitron.mode', App.settings.mode); }catch(_){}
+    if (typeof App.saveSettings === 'function') App.saveSettings(App.settings);
+    // re-render current card/stats to reflect new step/threshold immediately
+    try{ if (typeof renderStars==='function') renderStars(); }catch(_){}
+    try{ if (typeof App.renderSetsBar==='function') App.renderSetsBar(); }catch(_){}
+  }
+  document.addEventListener('change', function(e){
+    if (e.target && e.target.id === 'modeToggle'){ applyFromUI(); }
+  }, { passive:true });
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', syncFromSettings, {once:true});
+  } else {
+    syncFromSettings();
+  }
+  // also resync when i18n changes or settings modal opens could be added if needed
 })();
