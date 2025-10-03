@@ -137,7 +137,18 @@
         <div class="modalBody">
           <div id="settingsContent" class="infoContent">
             <p data-i18n="settingsInDev">Раздел в разработке.</p>
-          </div>
+          
+
+  <!-- Mode toggle -->
+  <div id="modeToggleWrap" class="field" style="margin-top:10px;display:flex;align-items:center;gap:10px;justify-content:center">
+    <label for="modeToggle" style="display:flex;align-items:center;gap:10px;cursor:pointer">
+      <span data-i18n="modeNormal">Обычный режим</span>
+      <input id="modeToggle" type="checkbox" role="switch" aria-checked="false" />
+      <span data-i18n="modeHard">Сложный режим</span>
+    </label>
+  </div>
+
+</div>
         </div>
         <div class="modalActions">
           <button id="settingsOk" class="btn primary" data-i18n="ok">OK</button>
