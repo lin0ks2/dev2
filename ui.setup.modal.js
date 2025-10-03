@@ -314,13 +314,7 @@
     if (btn && tr.settingsTitle) btn.title = tr.settingsTitle;
 
     if (body) {
-  var items = body.querySelectorAll('[data-i18n="settingsInDev"]');
-  if (items.length === 0) {
-    var p = document.createElement('p');
-    p.setAttribute('data-i18n','settingsInDev');
-    p.textContent = tr.settingsInDev || 'Раздел в разработке.';
-    body.prepend(p);
-  } else {
+  /* settingsInDev removed */ else {
     items[0].textContent = tr.settingsInDev || 'Раздел в разработке.';
     for (var i=1;i<items.length;i++){ items[i].remove(); }
   }
