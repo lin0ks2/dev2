@@ -27,7 +27,11 @@
       // App & brand
       appTitle: "Lexitron",
       tagline: "Он научит!",
-      settingsTitle: "Настройки",
+      
+      
+      donateText: "Раздел в разработке. Спасибо за желание поддержать!",
+donateTitle: "Поддержать проект",
+settingsTitle: "Настройки",
       settingsInDev: "Раздел в разработке.",
 
 
@@ -107,7 +111,11 @@
       // App & brand
       appTitle: "Lexitron",
       tagline: "Він навчить!",
-      settingsTitle: "Налаштування",
+      
+      
+      donateText: "Розділ у розробці. Дякуємо за бажання підтримати!",
+donateTitle: "Підтримати проєкт",
+settingsTitle: "Налаштування",
       settingsInDev: "Розділ у розробці.",
 
 

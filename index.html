@@ -121,7 +121,9 @@
   
     <div class="extraActions" aria-label="Extra actions">
       <button id="btnInfo" class="iconBtn" title="Инструкция" aria-label="Инструкция">ℹ️</button>
-<button id="btnSettings" class="iconBtn" title="Настройки" aria-label="Настройки">⚙️</button>
+      <button id="btnDonate" class="iconBtn" title="Поддержка" aria-label="Поддержка">💰</button>
+
+      <button id="btnSettings" class="iconBtn" title="Настройки" aria-label="Настройки">⚙️</button>
     </div>
 
     <!-- Info modal with footer OK in same style as Dicts modal -->
@@ -139,6 +141,25 @@
         </div>
         <div class="modalActions">
           <button id="settingsOk" class="btn primary" data-i18n="ok">OK</button>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Donate modal (same structure as Settings) -->
+    <div id="donateModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="donateTitle">
+      <div class="modalFrame">
+        <div class="modalHeader">
+          <div class="modalTitle" id="donateTitle" data-i18n="donateTitle">Поддержать проект</div>
+          <button class="iconBtn small" id="donateClose" aria-label="Close">✖️</button>
+        </div>
+        <div class="modalBody">
+          <div id="donateContent" class="infoContent">
+            <p data-i18n="donateText">Раздел в разработке. Спасибо за желание поддержать!</p>
+          </div>
+        </div>
+        <div class="modalActions">
+          <button id="donateOk" class="btn primary" data-i18n="ok">OK</button>
         </div>
       </div>
     </div>

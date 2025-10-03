@@ -1039,3 +1039,36 @@ function showMotivation(type = "praise") {
 
 })();
 
+
+// Donate modal bootstrap (mirrors Settings modal)
+(function(){
+  const btn   = document.getElementById('btnDonate');
+  const modal = document.getElementById('donateModal');
+  if (!btn || !modal) return;
+
+  const titleEl   = document.getElementById('donateTitle');
+  const contentEl = document.getElementById('donateContent');
+  const closeEl   = document.getElementById('donateClose');
+  const okEl      = document.getElementById('donateOk');
+
+  function fillFromI18n(){
+    try{
+      const t = (typeof App==='object' && typeof App.i18n==='function') ? (App.i18n()||{}) : {};
+      if (titleEl && t.donateTitle)  titleEl.textContent = String(t.donateTitle);
+      if (contentEl && t.donateText){
+        const p = contentEl.querySelector('p');
+        if (p) p.textContent = String(t.donateText);
+      }
+    }catch(_){}
+  }
+  function open(){ try{ fillFromI18n(); modal.classList.remove('hidden'); }catch(_){} }
+  function close(){ try{ modal.classList.add('hidden'); }catch(_){} }
+
+  btn.addEventListener('click', function(e){ try{ e.preventDefault(); e.stopPropagation(); }catch(_){ } open(); }, { passive:false });
+  if (closeEl) closeEl.addEventListener('click', close, { passive:true });
+  if (okEl)    okEl.addEventListener('click', close, { passive:true });
+  modal.addEventListener('click', function(e){ if (e.target===modal) close(); }, { passive:true });
+
+  if (document.readyState==='loading') document.addEventListener('DOMContentLoaded', fillFromI18n, {once:true});
+  else fillFromI18n();
+})();
