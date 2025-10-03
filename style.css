@@ -578,8 +578,7 @@ a#donate, .donate, .donate a, .donate-btn, .donate-btn a, .icon-donate,
 /* === Dicts modal: prevent double header line caused by inline .modal .modalHeader border === */
 #modal .modalHeader{ border-bottom: none !important; }  /* keep only ::after inset divider */
 
-/* =====================================================================
-   Settings modal — visual parity with Info modal (v1.6.3 hotfix)
+
    We do NOT change existing selectors; we only add #settingsModal twins.
    ===================================================================== */
 #infoModal.modal,
@@ -641,6 +640,76 @@ a#donate, .donate, .donate a, .donate-btn, .donate-btn a, .icon-donate,
 }
 
 #infoModal .iconBtn.small,
+#settingsModal .iconBtn.small{
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+}
+
+/* =====================================================================
+   Settings modal — visual parity with Info modal (v1.6.3 hotfix, corrected)
+   NOTE: We DO NOT touch #infoModal at all to avoid overriding its hidden state.
+         Only #settingsModal selectors are added.
+   ===================================================================== */
+#settingsModal.modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#settingsModal.hidden { display: none !important; }
+
+#settingsModal .modalFrame{
+  width: min(680px, 92vw);
+  background: var(--card);
+  color: var(--text);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.15);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+#settingsModal .modalHeader{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 14px;
+  position: relative;
+  border-bottom: none !important;
+}
+#settingsModal .modalHeader::after{
+  content: "";
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 0;
+  height: 1px;
+  background: var(--border);
+}
+
+#settingsModal .modalBody{
+  padding: 14px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+#settingsModal .modalActions{
+  display: flex;
+  justify-content: center;
+  padding: 14px 14px 14px;
+  position: relative;
+  border-top: none !important;
+}
+#settingsModal .modalActions::before{
+  content: "";
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  top: 0;
+  height: 1px;
+  background: var(--border);
+}
+
 #settingsModal .iconBtn.small{
   width: 36px;
   height: 36px;
