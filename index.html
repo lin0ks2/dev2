@@ -154,9 +154,23 @@
           <button class="iconBtn small" id="donateClose" aria-label="Close">✖️</button>
         </div>
         <div class="modalBody">
-          <div id="donateContent" class="infoContent">
-            <p data-i18n="donateText">Раздел в разработке. Спасибо за желание поддержать!</p>
-          </div>
+          <div id="donateContent" class="infoContent" style="text-align:center">
+  <div id="donate-button-container" style="margin-top:20px">
+    <div id="donate-button"></div>
+    <script src="https://www.paypalobjects.com/donate/sdk/donate-sdk.js" charset="UTF-8"></script>
+    <script>
+      PayPal.Donation.Button({
+        env:'production',
+        hosted_button_id:'KFBR8BW5ZZTQ4',
+        image: {
+          src:'https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif',
+          alt:'Donate with PayPal button',
+          title:'PayPal - The safer, easier way to pay online!'
+        }
+      }).render('#donate-button');
+    </script>
+  </div>
+</div>
         </div>
         <div class="modalActions">
           <button id="donateOk" class="btn primary" data-i18n="ok">OK</button>
