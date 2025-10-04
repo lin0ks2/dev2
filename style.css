@@ -898,3 +898,17 @@ html[data-theme="dark"] .confirmModal #confirmText,
   border-top: 1px solid transparent; /* keeps geometry consistent */
 }
 
+
+
+/* --- Confirm modal: use global theme tokens exactly like other modals --- */
+.confirmModal .modalFrame {
+  background: var(--card) !important;
+  color: var(--text) !important;
+}
+.confirmModal .modalHeader {
+  border-bottom: 1px solid var(--border) !important;
+}
+.confirmModal .modalActions {
+  border-top: 1px solid var(--border) !important;
+}
+
