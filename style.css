@@ -839,7 +839,7 @@ body.modal-open { overflow: hidden; }
 /* --- Confirm modal visual parity with Info/Donate/Settings --- */
 .confirmModal .modalHeader {
   padding: 12px 16px !important;
-  border-bottom: 1px solid var(--modal-divider, rgba(0,0,0,0.08));
+  
 }
 .confirmModal .modalTitle {
   margin: 0;
@@ -854,7 +854,7 @@ body.modal-open { overflow: hidden; }
 }
 .confirmModal .modalActions {
   padding: 12px 16px !important;
-  border-top: 1px solid var(--modal-divider, rgba(0,0,0,0.08));
+  
   display: flex;
   gap: 12px;
   justify-content: center;
@@ -906,10 +906,10 @@ html[data-theme="dark"] .confirmModal #confirmText,
   color: var(--text) !important;
 }
 .confirmModal .modalHeader {
-  border-bottom: 1px solid var(--border) !important;
+  
 }
 .confirmModal .modalActions {
-  border-top: 1px solid var(--border) !important;
+  
 }
 
 
@@ -924,3 +924,12 @@ html[data-theme="dark"] .confirmModal #confirmText,
   background: var(--border);
 }
 
+
+/* Confirm modal header: use inset divider only, no border-bottom */
+.confirmModal .modalHeader{ position: relative !important; border-bottom: none !important; }
+
+/* Confirm modal footer: inset divider like header */
+.confirmModal .modalActions{ position: relative !important; }
+.confirmModal .modalActions::before{
+  content:""; position:absolute; left:14px; right:14px; top:0; height:1px; background:var(--border);
+}
