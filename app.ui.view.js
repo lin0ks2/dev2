@@ -658,7 +658,7 @@ if (!w) return;
       delBtn.className = 'iconOnly';
       delBtn.title = (App.settings.lang === 'ru') ? 'Очистить «Мои ошибки»' : 'Очистити «Мої помилки»';
       delBtn.textContent = '🗑️';
-      delBtn.addEventListener('click', (e) => {
+      delBtn.addEventListener('click', async (e) => {
         e.stopPropagation();
         const msg = (App.settings.lang === 'ru') ? 'Очистить «Мои ошибки» для активного языка? Это действие нельзя отменить.' : 'Очистити «Мої помилки» для активної мови? Дію не можна скасувати.';
         if (!(await App.showConfirmModal({text: msg, title: (App.i18n&&App.i18n().confirmTitle)||'Подтверждение'}))) return;
@@ -673,7 +673,7 @@ if (!w) return;
       delBtn.className = 'iconOnly';
       delBtn.title = (App.settings.lang === 'ru') ? 'Очистить «Избранное»' : 'Очистити «Обране»';
       delBtn.textContent = '🗑️';
-      delBtn.addEventListener('click', (e) => {
+      delBtn.addEventListener('click', async (e) => {
         e.stopPropagation();
         const msg = (App.settings.lang === 'ru') ? 'Очистить «Избранное»? Это действие нельзя отменить.' : 'Очистити «Обране»? Дію не можна скасувати.';
         if (!(await App.showConfirmModal({text: msg, title: (App.i18n&&App.i18n().confirmTitle)||'Подтверждение'}))) return;
