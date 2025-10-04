@@ -951,3 +951,43 @@ html[data-theme="dark"] .confirmModal #confirmText,
 html[data-theme="dark"] .confirmModal .modalHeader{ border-bottom: none !important; }
 :root.theme-dark .confirmModal .modalHeader{ border-bottom: none !important; }
 
+
+
+
+/* Setup Mode toggle — reuse Settings styles */
+#setupModeToggleWrap { user-select:none }
+#setupModeToggleWrap label { gap:12px }
+#setupModeToggleWrap #setupModeToggle {
+  appearance: none;
+  position: relative;
+  width: 54px; height: 30px;
+  border-radius: 999px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  outline: none;
+  cursor: pointer;
+  transition: background .2s ease, border-color .2s ease, box-shadow .2s ease;
+  display: inline-block;
+}
+#setupModeToggleWrap #setupModeToggle::after{
+  content:"";
+  position: absolute;
+  left: 2px; top: 2px;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--bg-elev);
+  box-shadow: 0 2px 4px rgba(0,0,0,.15);
+  transition: left .2s ease, background .2s ease;
+}
+#setupModeToggleWrap #setupModeToggle:checked{
+  background: rgba(0, 160, 100, .85);
+  border-color: rgba(0, 160, 100, .9);
+}
+#setupModeToggleWrap #setupModeToggle:checked::after{ left: 28px; }
+#setupModeToggleWrap #setupModeToggle:focus-visible{
+  box-shadow: 0 0 0 3px rgba(100,150,240,.35);
+}
+#setupModeToggleWrap span{ font-size:14px; opacity:.9 }
+@media (prefers-reduced-motion: reduce){
+  #setupModeToggleWrap #setupModeToggle, #setupModeToggleWrap #setupModeToggle::after{ transition:none }
+}
