@@ -660,8 +660,8 @@ if (!w) return;
       delBtn.textContent = '🗑️';
       delBtn.addEventListener('click', async (e) => {
         e.stopPropagation();
-        const msg = (App.settings.lang === 'ru') ? 'Очистить «Мои ошибки» для активного языка? Это действие нельзя отменить.' : 'Очистити «Мої помилки» для активної мови? Дію не можна скасувати.';
-        if (!(await App.showConfirmModal({text: msg, title: (App.i18n&&App.i18n().confirmTitle)||'Подтверждение'}))) return;
+        const msg = App.i18n().confirmMistakesReset;
+        if (!(await App.showConfirmModal({text: msg, title: App.i18n().confirmTitle, okText: App.i18n().confirmOk, cancelText: App.i18n().confirmCancel, title: (App.i18n&&App.i18n().confirmTitle)||'Подтверждение'}))) return;
         if (App.Mistakes && typeof App.Mistakes.clearActive==='function') App.Mistakes.clearActive();
         renderDictList(); App.renderSetsBar && App.renderSetsBar(); renderCard(true); updateStats();
       });
@@ -676,7 +676,7 @@ if (!w) return;
       delBtn.addEventListener('click', async (e) => {
         e.stopPropagation();
         const msg = (App.settings.lang === 'ru') ? 'Очистить «Избранное»? Это действие нельзя отменить.' : 'Очистити «Обране»? Дію не можна скасувати.';
-        if (!(await App.showConfirmModal({text: msg, title: (App.i18n&&App.i18n().confirmTitle)||'Подтверждение'}))) return;
+        if (!(await App.showConfirmModal({text: msg, title: App.i18n().confirmTitle, okText: App.i18n().confirmOk, cancelText: App.i18n().confirmCancel, title: (App.i18n&&App.i18n().confirmTitle)||'Подтверждение'}))) return;
         App.clearFavoritesAll && App.clearFavoritesAll();
 
         var defKey = null;
@@ -1172,8 +1172,8 @@ App.resetProgress = function(){
     if (newIsHard !== currentIsHard) {
       // Ask confirmation and reset progress for CURRENT dictionary (all sets) to avoid mixed star-steps
       var dictKey = (App.dictRegistry && App.dictRegistry.activeKey) || null;
-      var msg = 'Переключение режима сбросит прогресс в текущем словаре. Продолжить?';
-      if (!(await App.showConfirmModal({text: msg, title: (App.i18n&&App.i18n().confirmTitle)||'Подтверждение'}))) { el.checked = currentIsHard; // revert toggle
+      var msg = App.i18n().confirmModeReset;
+      if (!(await App.showConfirmModal({text: msg, title: App.i18n().confirmTitle, okText: App.i18n().confirmOk, cancelText: App.i18n().confirmCancel, title: (App.i18n&&App.i18n().confirmTitle)||'Подтверждение'}))) { el.checked = currentIsHard; // revert toggle
         el.setAttribute('aria-checked', String(currentIsHard));
         return;
        }
