@@ -912,3 +912,15 @@ html[data-theme="dark"] .confirmModal #confirmText,
   border-top: 1px solid var(--border) !important;
 }
 
+
+
+/* --- Confirm modal: forced header divider like other modals --- */
+.confirmModal .modalHeader{ position: relative; }
+.confirmModal .modalHeader::after{
+  content:"";
+  position:absolute;
+  left:14px; right:14px; bottom:0;
+  height:1px;
+  background: var(--border);
+}
+
