@@ -1168,14 +1168,31 @@ App.resetProgress = function(){
     if (!el) return;
     const newIsHard = !!el.checked;
     const currentIsHard = (App.getMode() === 'hard');
-    if (newIsHard !== currentIsHard && App.hasProgress()){
-      const msg = 'Переключение режима сбросит весь прогресс. Продолжить?';
-      if (!window.confirm(msg)){
+    
+    if (newIsHard !== currentIsHard) {
+      // Ask confirmation and reset progress for CURRENT dictionary (all sets) to avoid mixed star-steps
+      var dictKey = (App.dictRegistry && App.dictRegistry.activeKey) || null;
+      var msg = 'Переключение режима сбросит прогресс в текущем словаре. Продолжить?';
+      if (!window.confirm(msg)) {
         el.checked = currentIsHard; // revert toggle
+        el.setAttribute('aria-checked', String(currentIsHard));
         return;
       }
-      App.resetProgress();
+      try {
+        if (dictKey) {
+          if (typeof App.resetDeckProgress === 'function') App.resetDeckProgress(dictKey); // App.state.*
+          if (App.ProgressV2 && typeof App.ProgressV2.resetDeck === 'function') App.ProgressV2.resetDeck(dictKey); // progress.v2
+          if (typeof App.saveState === 'function') App.saveState();
+        }
+      } catch (_){}
+      try {
+        if (App.Stats && typeof App.Stats.recomputeAndRender === 'function') App.Stats.recomputeAndRender();
+      } catch(_){}
+      try { if (typeof renderSetStats === 'function') renderSetStats(); } catch(_){}
+      try { if (typeof App.renderSetsBar === 'function') App.renderSetsBar(); } catch(_){}
+      try { if (typeof renderStars === 'function') renderStars(); } catch(_){}
     }
+    
     const isHard = newIsHard;
     App.settings = App.settings || {};
     App.settings.mode = isHard ? 'hard' : 'normal';

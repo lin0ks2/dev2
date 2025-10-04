@@ -249,4 +249,20 @@ function load(){
     }
   };
 
+
+  // ---- public deck reset (by dictionary key) ----
+  window.App = window.App || {};
+  App.ProgressV2 = App.ProgressV2 || {};
+  App.ProgressV2.resetDeck = function(dictKey){
+    try {
+      if (!dictKey) return;
+      var st = load();
+      if (!st) return;
+      try { if (st.stars && st.stars[dictKey]) delete st.stars[dictKey]; } catch(_){}
+      try { if (st.successes && st.successes[dictKey]) delete st.successes[dictKey]; } catch(_){}
+      try { if (st.lastSeen && st.lastSeen[dictKey]) delete st.lastSeen[dictKey]; } catch(_){}
+      save(st);
+    } catch(e){ /* noop */ }
+  };
+
 })();
