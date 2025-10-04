@@ -1228,6 +1228,8 @@ App.resetProgress = function(){
     return new Promise(function(resolve){
       try{
         const modal = document.getElementById('confirmModal');
+        const body = document.body || document.documentElement;
+
         const titleEl = document.getElementById('confirmTitle');
         const textEl = document.getElementById('confirmText');
         const okBtn = document.getElementById('confirmOk');
@@ -1240,13 +1242,14 @@ App.resetProgress = function(){
         okBtn.textContent = opts.okText || (t && t.ok) || 'OK';
         cancelBtn.textContent = opts.cancelText || (t && t.cancel) || 'Отмена';
 
-        function open(){ modal.classList.remove('hidden'); }
-        function close(){ modal.classList.add('hidden'); cleanup(); }
+        function open(){ modal.classList.remove('hidden'); body && body.classList.add('modal-open'); }
+        function close(){ modal.classList.add('hidden'); body && body.classList.remove('modal-open'); cleanup(); }
         function cleanup(){
           okBtn.onclick = null;
           cancelBtn.onclick = null;
           if (closeBtn) closeBtn.onclick = null;
           document.removeEventListener('keydown', onKey, true);
+          document.removeEventListener('keydown', onTrapTab, true);
           modal.removeEventListener('click', onBackdrop, true);
         }
         function onKey(e){
@@ -1258,9 +1261,22 @@ App.resetProgress = function(){
         }
 
         okBtn.onclick = function(){ resolve(true); close(); };
+        setTimeout(function(){ try{ okBtn.focus(); }catch(_){ } }, 0);
+        function onTrapTab(e){
+          if (e.key === 'Tab'){
+            const focusables = [okBtn, cancelBtn, closeBtn].filter(Boolean);
+            const idx = focusables.indexOf(document.activeElement);
+            if (e.shiftKey){
+              if (idx <= 0){ e.preventDefault(); focusables[focusables.length-1].focus(); }
+            } else {
+              if (idx === focusables.length-1){ e.preventDefault(); focusables[0].focus(); }
+            }
+          }
+        }
         cancelBtn.onclick = function(){ resolve(false); close(); };
         if (closeBtn) closeBtn.onclick = function(){ resolve(false); close(); };
         document.addEventListener('keydown', onKey, true);
+        document.addEventListener('keydown', onTrapTab, true);
         modal.addEventListener('click', onBackdrop, true);
         open();
       }catch(e){
