@@ -945,3 +945,9 @@ html[data-theme="dark"] .confirmModal #confirmText,
   content:""; position:absolute; left:14px; right:14px; top:0; height:1px; background:var(--border);
 }
 
+
+
+/* Confirm modal: kill any remaining dark-theme header border to avoid duplicate line */
+html[data-theme="dark"] .confirmModal .modalHeader{ border-bottom: none !important; }
+:root.theme-dark .confirmModal .modalHeader{ border-bottom: none !important; }
+
