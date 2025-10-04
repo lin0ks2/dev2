@@ -975,7 +975,7 @@ html[data-theme="dark"] .confirmModal .modalHeader{ border-bottom: none !importa
   left: 2px; top: 2px;
   width: 24px; height: 24px;
   border-radius: 50%;
-  background: var(--bg-elev);
+  background: #fff;
   box-shadow: 0 2px 4px rgba(0,0,0,.15);
   transition: left .2s ease, background .2s ease;
 }
