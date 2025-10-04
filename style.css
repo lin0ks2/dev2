@@ -933,3 +933,15 @@ html[data-theme="dark"] .confirmModal #confirmText,
 .confirmModal .modalActions::before{
   content:""; position:absolute; left:14px; right:14px; top:0; height:1px; background:var(--border);
 }
+
+
+/* === Confirm modal: authoritative inset dividers (no duplicate borders) === */
+.confirmModal .modalHeader{ position: relative !important; border-bottom: none !important; }
+.confirmModal .modalHeader::after{
+  content:""; position:absolute; left:14px; right:14px; bottom:0; height:1px; background:var(--border);
+}
+.confirmModal .modalActions{ position: relative !important; }
+.confirmModal .modalActions::before{
+  content:""; position:absolute; left:14px; right:14px; top:0; height:1px; background:var(--border);
+}
+
