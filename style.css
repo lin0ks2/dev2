@@ -862,3 +862,39 @@ body.modal-open { overflow: hidden; }
 .confirmModal .btn.primary { min-width: 120px; }
 .confirmModal .btn { padding: 10px 16px; }
 
+
+
+/* --- Confirm modal: dark theme adaptation + consistent dividers --- */
+.confirmModal .modalFrame {
+  /* inherit text color from theme; set fallback */
+  color: var(--modal-fg, inherit);
+  background: var(--modal-bg, #fff);
+}
+/* Light theme divider colors */
+.confirmModal .modalHeader,
+.confirmModal .modalActions {
+  border-color: var(--modal-divider, rgba(0,0,0,0.10)) !important;
+}
+/* Dark theme overrides */
+html[data-theme="dark"] .confirmModal .modalFrame,
+:root.theme-dark .confirmModal .modalFrame {
+  background: var(--modal-bg-dark, #22262e);
+  color: var(--modal-fg-dark, #e8eaee);
+}
+html[data-theme="dark"] .confirmModal .modalHeader,
+html[data-theme="dark"] .confirmModal .modalActions,
+:root.theme-dark .confirmModal .modalHeader,
+:root.theme-dark .confirmModal .modalActions {
+  border-color: var(--modal-divider-dark, rgba(255,255,255,0.10)) !important;
+}
+/* Ensure body text readable in dark */
+html[data-theme="dark"] .confirmModal #confirmText,
+:root.theme-dark .confirmModal #confirmText {
+  color: var(--modal-fg-dark, #e8eaee);
+  opacity: 0.95;
+}
+/* Optional: subtle top border to fully match other modals if needed */
+.confirmModal .modalFrame {
+  border-top: 1px solid transparent; /* keeps geometry consistent */
+}
+
