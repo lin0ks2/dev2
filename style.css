@@ -168,10 +168,15 @@ button{
 
 /* "Не знаю" — по центру и без мигания фокуса */
 .idkWrapper{ grid-column:1 / -1; display:flex; justify-content:center; margin-top:6px; }
-button.ghost { background: var(--bg-elev); border:1px solid var(--border); color:var(--fg-main); }
+button.ghost{
+  background:var(--idk-bg); border:1px solid var(--border); color:var(--idk-fg);
+  margin-top:6px; height:42px; padding:0 16px;
+  border-radius:12px; font-size:15px; font-weight:600;
+  display:flex; align-items:center; justify-content:center; box-shadow:none; will-change: transform, filter;
+}
 button.ghost:hover{ filter:brightness(1.06); }
 button.ghost:focus, button.ghost:focus-visible{ outline:none; box-shadow:0 0 0 3px var(--focus-ring); }
-[data-theme="dark"] button.ghost { background: var(--bg-elev); border:1px solid var(--border); color:var(--fg-main); }
+[data-theme="dark"] button.ghost{ background:#111827; color:var(--text); border:1px solid #374151; box-shadow:none; }
 
 /* Статистика */
 
@@ -949,28 +954,13 @@ html[data-theme="dark"] .confirmModal .modalHeader{ border-bottom: none !importa
 
 
 
-
-#setupModeToggleWrap span{ font-size:14px; opacity:.9 }
-@media (prefers-reduced-motion: reduce){
-  #setupModeToggleWrap #setupModeToggle, #setupModeToggleWrap #setupModeToggle::after{ transition:none }
-}
-
-
-/* Setup mode toggle — add separators to match Settings modal */
-#setupModeToggleWrap{
-  border-top:1px solid var(--border);
-  border-bottom:1px solid var(--border);
-  padding:14px 0;
-  margin-top:10px;
-}
-
-
-/* Harmonize setup toggle with settings toggle */
-#setupModeToggle {
+/* Setup Mode toggle — reuse Settings styles */
+#setupModeToggleWrap { user-select:none }
+#setupModeToggleWrap label { gap:12px }
+#setupModeToggleWrap #setupModeToggle {
   appearance: none;
   position: relative;
-  width: 54px;
-  height: 30px;
+  width: 54px; height: 30px;
   border-radius: 999px;
   background: var(--border);
   border: 1px solid var(--border);
@@ -979,23 +969,25 @@ html[data-theme="dark"] .confirmModal .modalHeader{ border-bottom: none !importa
   transition: background .2s ease, border-color .2s ease, box-shadow .2s ease;
   display: inline-block;
 }
-#setupModeToggle::after {
-  content: "";
+#setupModeToggleWrap #setupModeToggle::after{
+  content:"";
   position: absolute;
-  left: 2px;
-  top: 2px;
-  width: 24px;
-  height: 24px;
+  left: 2px; top: 2px;
+  width: 24px; height: 24px;
   border-radius: 50%;
   background: var(--bg-elev);
   box-shadow: 0 2px 4px rgba(0,0,0,.15);
   transition: left .2s ease, background .2s ease;
 }
-#setupModeToggle:checked {
+#setupModeToggleWrap #setupModeToggle:checked{
   background: rgba(0, 160, 100, .85);
   border-color: rgba(0, 160, 100, .9);
 }
-#setupModeToggle:checked::after { left: 28px; }
-#setupModeToggle:focus-visible {
+#setupModeToggleWrap #setupModeToggle:checked::after{ left: 28px; }
+#setupModeToggleWrap #setupModeToggle:focus-visible{
   box-shadow: 0 0 0 3px rgba(100,150,240,.35);
+}
+#setupModeToggleWrap span{ font-size:14px; opacity:.9 }
+@media (prefers-reduced-motion: reduce){
+  #setupModeToggleWrap #setupModeToggle, #setupModeToggleWrap #setupModeToggle::after{ transition:none }
 }
