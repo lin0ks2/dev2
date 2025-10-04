@@ -661,7 +661,7 @@ if (!w) return;
       delBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         const msg = (App.settings.lang === 'ru') ? 'Очистить «Мои ошибки» для активного языка? Это действие нельзя отменить.' : 'Очистити «Мої помилки» для активної мови? Дію не можна скасувати.';
-        if (!confirm(msg)) return;
+        if (!(await App.showConfirmModal({text: msg, title: (App.i18n&&App.i18n().confirmTitle)||'Подтверждение'}))) return;
         if (App.Mistakes && typeof App.Mistakes.clearActive==='function') App.Mistakes.clearActive();
         renderDictList(); App.renderSetsBar && App.renderSetsBar(); renderCard(true); updateStats();
       });
@@ -676,7 +676,7 @@ if (!w) return;
       delBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         const msg = (App.settings.lang === 'ru') ? 'Очистить «Избранное»? Это действие нельзя отменить.' : 'Очистити «Обране»? Дію не можна скасувати.';
-        if (!confirm(msg)) return;
+        if (!(await App.showConfirmModal({text: msg, title: (App.i18n&&App.i18n().confirmTitle)||'Подтверждение'}))) return;
         App.clearFavoritesAll && App.clearFavoritesAll();
 
         var defKey = null;
@@ -1163,7 +1163,7 @@ App.resetProgress = function(){
       el.setAttribute('aria-checked', String(isHard));
     }catch(_){}
   }
-  function applyFromUI(){
+  async function applyFromUI(){
     const el = document.getElementById('modeToggle');
     if (!el) return;
     const newIsHard = !!el.checked;
@@ -1173,11 +1173,10 @@ App.resetProgress = function(){
       // Ask confirmation and reset progress for CURRENT dictionary (all sets) to avoid mixed star-steps
       var dictKey = (App.dictRegistry && App.dictRegistry.activeKey) || null;
       var msg = 'Переключение режима сбросит прогресс в текущем словаре. Продолжить?';
-      if (!window.confirm(msg)) {
-        el.checked = currentIsHard; // revert toggle
+      if (!(await App.showConfirmModal({text: msg, title: (App.i18n&&App.i18n().confirmTitle)||'Подтверждение'}))) { el.checked = currentIsHard; // revert toggle
         el.setAttribute('aria-checked', String(currentIsHard));
         return;
-      }
+       }
       try {
         if (dictKey) {
           if (typeof App.resetDeckProgress === 'function') App.resetDeckProgress(dictKey); // App.state.*
@@ -1219,3 +1218,57 @@ App.resetProgress = function(){
       syncFromSettings();
   });
 ;
+
+
+// === Unified Confirm Modal API ===
+(function(){
+  const App = window.App || (window.App = {});
+  App.showConfirmModal = function(opts){
+    opts = opts || {};
+    return new Promise(function(resolve){
+      try{
+        const modal = document.getElementById('confirmModal');
+        const titleEl = document.getElementById('confirmTitle');
+        const textEl = document.getElementById('confirmText');
+        const okBtn = document.getElementById('confirmOk');
+        const cancelBtn = document.getElementById('confirmCancel');
+        const closeBtn = document.getElementById('confirmClose');
+        const t = (typeof App.i18n==='function') ? App.i18n() : null;
+
+        titleEl.textContent = opts.title || (t && t.confirmTitle) || 'Подтверждение';
+        textEl.textContent = opts.text || (t && t.confirmText) || 'Вы уверены?';
+        okBtn.textContent = opts.okText || (t && t.ok) || 'OK';
+        cancelBtn.textContent = opts.cancelText || (t && t.cancel) || 'Отмена';
+
+        function open(){ modal.classList.remove('hidden'); }
+        function close(){ modal.classList.add('hidden'); cleanup(); }
+        function cleanup(){
+          okBtn.onclick = null;
+          cancelBtn.onclick = null;
+          if (closeBtn) closeBtn.onclick = null;
+          document.removeEventListener('keydown', onKey, true);
+          modal.removeEventListener('click', onBackdrop, true);
+        }
+        function onKey(e){
+          if (e.key === 'Escape') { resolve(false); close(); }
+          if (e.key === 'Enter')  { resolve(true);  close(); }
+        }
+        function onBackdrop(e){
+          if (e.target === modal) { resolve(false); close(); }
+        }
+
+        okBtn.onclick = function(){ resolve(true); close(); };
+        cancelBtn.onclick = function(){ resolve(false); close(); };
+        if (closeBtn) closeBtn.onclick = function(){ resolve(false); close(); };
+        document.addEventListener('keydown', onKey, true);
+        modal.addEventListener('click', onBackdrop, true);
+        open();
+      }catch(e){
+        // Fallback to native confirm if something goes wrong
+        resolve(window.confirm(opts.text || 'Вы уверены?'));
+      }
+    });
+  };
+})();
+// === End Unified Confirm Modal API ===
+

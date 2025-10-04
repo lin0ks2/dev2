@@ -289,5 +289,23 @@
   document.addEventListener('i18n:lang-changed', hydrateI18N);
 })();
 </script>
+
+  <!-- Unified Confirm Modal -->
+  <div id="confirmModal" class="modal confirmModal hidden" role="dialog" aria-modal="true" aria-labelledby="confirmTitle" aria-describedby="confirmText">
+    <div class="modalFrame">
+      <div class="modalHeader">
+        <div class="modalTitle" id="confirmTitle">Подтверждение</div>
+        <button class="iconBtn small" id="confirmClose" aria-label="Close">✖️</button>
+      </div>
+      <div class="modalBody">
+        <div id="confirmText" class="infoContent">Вы уверены?</div>
+      </div>
+      <div class="modalActions">
+        <button id="confirmOk" class="btn primary">OK</button>
+        <button id="confirmCancel" class="btn">Отмена</button>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>

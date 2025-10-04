@@ -803,3 +803,10 @@ a#donate, .donate, .donate a, .donate-btn, .donate-btn a, .icon-donate,
 @media (prefers-reduced-motion: reduce){
   #modeToggleWrap #modeToggle, #modeToggleWrap #modeToggle::after{ transition:none }
 }
+
+
+/* Confirm modal tweaks (reuse existing modal styles) */
+.confirmModal .modalFrame { max-width: 520px; }
+.confirmModal .modalActions { display: flex; gap: 10px; justify-content: center; }
+.confirmModal .btn.primary { min-width: 120px; }
+
