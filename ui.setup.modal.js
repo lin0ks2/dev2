@@ -33,9 +33,9 @@
   function L(lang){
     const l=(lang||'').toLowerCase();
     const map={
-      ru:{setupTitle:'Начальная настройка', uiLanguage:'Язык интерфейса', studyLanguage:'Язык тренировки', chooseDeck:'Выберите словарь', ok:'OK'},
-      uk:{setupTitle:'Початкове налаштування', uiLanguage:'Мова інтерфейсу', studyLanguage:'Мова тренування', chooseDeck:'Оберіть словник', ok:'OK'},
-      en:{setupTitle:'Initial setup', uiLanguage:'Interface language', studyLanguage:'Study language', chooseDeck:'Choose deck', ok:'OK'}
+      ru:{setupTitle:'Начальная настройка', uiLanguage:'Язык интерфейса', studyLanguage:'Язык тренировки', chooseDeck:'Выберите словарь', ok:'OK', modeNormal:'Обычный режим', modeHard:'Сложный режим'},
+      uk:{setupTitle:'Початкове налаштування', uiLanguage:'Мова інтерфейсу', studyLanguage:'Мова тренування', chooseDeck:'Оберіть словник', ok:'OK', modeNormal:'Звичайний режим', modeHard:'Складний режим'},
+      en:{setupTitle:'Initial setup', uiLanguage:'Interface language', studyLanguage:'Study language', chooseDeck:'Choose deck', ok:'OK', modeNormal:'Normal mode', modeHard:'Hard mode'}
     };
     return map[l]||map.ru;
   }
@@ -88,6 +88,16 @@
             <div class="label">${labelStudy}</div>
             <div class="langFlags flagsRow" id="setupStudyFlags"></div>
           </div>
+
+        <!-- Mode toggle in setup -->
+        <div id="setupModeToggleWrap" class="field" style="margin-top:10px;display:flex;align-items:center;gap:10px;justify-content:center">
+          <label for="setupModeToggle" style="display:flex;align-items:center;gap:10px;cursor:pointer">
+            <span data-i18n="modeNormal">${T('modeNormal', (L(eff).modeNormal||'Обычный режим'), eff)}</span>
+            <input id="setupModeToggle" type="checkbox" role="switch" aria-checked="false" />
+            <span data-i18n="modeHard">${T('modeHard', (L(eff).modeHard||'Сложный режим'), eff)}</span>
+          </label>
+        </div>
+
         </div>
         <div class="modalActions">
           <button id="setupConfirm" class="primary" disabled>${labelOk}</button>
@@ -109,6 +119,21 @@
     const studyFlagsEl = m.querySelector('#setupStudyFlags');
     const okBtn = m.querySelector('#setupConfirm');
 
+    const modeEl = m.querySelector('#setupModeToggle');
+    // Initialize from current App mode (checked = hard)
+    try{
+      const isHard = (window.App && App.getMode && App.getMode()==='hard');
+      if (modeEl){
+        modeEl.checked = !!isHard;
+        modeEl.setAttribute('aria-checked', String(!!isHard));
+        modeEl.addEventListener('change', function(){
+          // No confirmation in setup; just reflect UI state
+          modeEl.setAttribute('aria-checked', String(!!modeEl.checked));
+        }, {passive:true});
+      }
+    }catch(_){}
+
+
     function activeUi(){ return (uiFlagsEl.querySelector('.flagBtn.active')?.dataset.code)||eff; }
     function activeStudy(){ return (studyFlagsEl.querySelector('.flagBtn.active')?.dataset.code)||null; }
 
@@ -118,6 +143,14 @@
       m.querySelectorAll('.field .label')[0].textContent = (I18N[code]?.uiLanguage)||lab.uiLanguage;
       m.querySelectorAll('.field .label')[1].textContent = (I18N[code]?.studyLanguage)||lab.studyLanguage;
       okBtn.textContent = (I18N[code]?.ok || I18N[code]?.confirm || lab.ok);
+      // Update mode toggle labels too
+      try{
+        const normalSpan = m.querySelector('#setupModeToggleWrap [data-i18n="modeNormal"]');
+        const hardSpan = m.querySelector('#setupModeToggleWrap [data-i18n="modeHard"]');
+        if (normalSpan) normalSpan.textContent = (I18N[code]?.modeNormal) || lab.modeNormal || 'Обычный режим';
+        if (hardSpan)   hardSpan.textContent   = (I18N[code]?.modeHard)   || lab.modeHard   || 'Сложный режим';
+      }catch(_){}
+
     }
 
     function renderUiFlags(){
@@ -196,7 +229,21 @@
     m.classList.remove('hidden');
 
     okBtn.addEventListener('click', ()=>{
-      const ui = activeUi() || effectiveLang();
+      
+      // Persist chosen mode from setup toggle (no confirmation)
+      try{
+        const modeEl = m.querySelector('#setupModeToggle');
+        const chosenMode = (modeEl && modeEl.checked) ? 'hard' : 'normal';
+        if (window.App){
+          window.App.settings = window.App.settings || {};
+          window.App.settings.mode = chosenMode;
+          try{ window.localStorage.setItem('lexitron.mode', chosenMode); }catch(_){}
+          try{ App.saveSettings && App.saveSettings(window.App.settings); }catch(_){}
+        } else {
+          try{ window.localStorage.setItem('lexitron.mode', chosenMode); }catch(_){}
+        }
+      }catch(_){}
+const ui = activeUi() || effectiveLang();
       const st = activeStudy() || get(LS.studyLang) || '';
       let dk = get(LS.deckKey);
       if (!dk && st){ dk = firstDeckForLang(st); if (dk) set(LS.deckKey, dk); }
